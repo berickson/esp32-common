@@ -1,0 +1,12 @@
+{
+  "name": "ESP32-Common",
+  "version": "0.0.1",
+  "keywords": "esp32",
+  "description": "helpers to bootstrap esp32 projects using Heltech esp32",
+  "repository": 
+  {
+    "type": "git",
+    "url": "https://github.com/berickson/esp32-common"
+  
+  }
+}
