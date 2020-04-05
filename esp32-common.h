@@ -164,6 +164,7 @@ public:
           break;
         }
         if (wifi_status == WL_CONNECTED) {
+          configTime(-8*60*60, 1*60*60, "pool.ntp.org");
           server.begin();
           current_state = status_connected;
           if(trace) Serial.print("wifi connected, web server started");
