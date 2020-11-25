@@ -149,11 +149,14 @@ public:
         break;
 
       case status_not_connected:
+      
         connect_start_ms = ms;
-        WiFi.mode(WIFI_STA);
+        WiFi.mode(WIFI_AP_STA);
         esp_wifi_set_ps (WIFI_PS_NONE);
+        WiFi.softAP("nerdlights");
         WiFi.begin(ssid.c_str(), password.c_str());
         current_state = status_connecting;
+        server.begin();
         break;
       
       case status_connecting:
@@ -165,13 +168,12 @@ public:
         }
         if (wifi_status == WL_CONNECTED) {
           configTime(-8*60*60, 1*60*60, "pool.ntp.org");
-          server.begin();
           current_state = status_connected;
           if(trace) Serial.print("wifi connected, web server started");
         } else {
           if(ms - connect_start_ms > 5000) {
             if(trace) Serial.print("couldn't connect, trying again");
-            WiFi.disconnect();
+            //WiFi.disconnect();
             current_state = status_not_connected;
             break;
           }
@@ -182,8 +184,8 @@ public:
         if (wifi_status != WL_CONNECTED) {
           if(trace) Serial.print("wifi disconnected, web server stopped");
           current_state = status_not_connected;
-          server.end();
-          WiFi.disconnect();
+          //server.end();
+          //WiFi.disconnect();
         }
         break;
 
@@ -272,6 +274,7 @@ void esp32_common_setup() {
         AsyncWebParameter* p = request->getParam(i);
         if(p->isPost() && p->name() == "body") {
           CmdParser parser;
+          parser.setOptIgnoreQuote();
           String body = p->value();
 
           parser.parseCmd((char *)body.c_str());
